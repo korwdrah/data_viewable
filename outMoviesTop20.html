@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>豆瓣电影可视化分析</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <script src="./layui/layui.js"></script>
+    <script src="./layui/echarts.js"></script>
+    <style>
+        body {
+            background-color: rgb(244, 246, 250);
+        }
+
+        div.all {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="all">
+
+        <!-- 你的 HTML 代码 -->
+        <ul class="layui-nav" lay-filter="">
+            <li class="layui-nav-item"><a href="index.html">电影基本信息</a></li>
+            <li class="layui-nav-item"><a href="yearNums.html">历年电影制作数总览</a></li>
+            <li class="layui-nav-item"><a href="typeNums.html">各类型电影制作总数总览</a></li>
+            <li class="layui-nav-item"><a href="typeNumsForDifCountry.html">国内外电影制作类型偏向对比</a></li>
+            <li class="layui-nav-item layui-this">
+                <a href="javascript:;">国外评分top20</a>
+                <dl class="layui-nav-child">
+                    <!--横向柱状图-->
+                    <dd><a href="CNmoviesTop20.html">国内</a></dd>
+                    <dd><a href="outMoviesTop20.html">国外</a></dd>
+                </dl>
+            </li>
+        </ul>
+
+
+        <div id="outer-moviesTop20-chart" style="position: absolute; width: 1500px; height: 550px; margin-left: -50px; margin-top: 20px;">
+        </div>
+    </div>
+</body>
+<script>
+    var chartDom = document.getElementById('outer-moviesTop20-chart');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        title: {
+            text: '国外豆瓣电影评分top20',
+            textStyle: {
+                fontSize: 25
+            },
+            left:65
+        },
+        tooltip: {
+            show: true,
+            trigger: 'item'
+        },
+        dataset: {
+            source: [
+                ['score', 'movie'],
+                [9.5, '十二怒汉（电视版）'],
+                [9.5, '辛德勒的名单'],
+                [9.5, 'Abhilasha'],
+                [9.5, '老鹰乐队2004年墨尔本演唱会'],
+                [9.5, '夏目友人帐 五 特别篇：一夜酒杯'],
+                [9.5, 'Minimum-Maximum'],
+                [9.5, '北国之恋：1987初恋'],
+                [9.5, '北国之恋：1989归乡'],
+                [9.5, 'Coldplay -  Ghost Stories Live 2014'],
+                [9.5, '飄'],
+                [9.5, '雅尼：雅典卫城现场音乐会'],
+                [9.5, '控方证人'],
+                [9.5, '我和我的女孩'],
+                [9.5, '北国之恋：1995秘密'],
+                [9.5, '第十二夜'],
+                [9.6, '天下一家'],
+                [9.6, '神秘博士：DT的视频日志：最后的日子'],
+                [9.6, '悲惨世界：25周年纪念演唱会'],
+                [9.6, '夏目友人帐 第六季 特别篇 铃响的残株'],
+                [9.8, '是，大臣 1984圣诞特辑']
+            ]
+        },
+        grid: { containLabel: true },
+        xAxis: { name: 'score' },
+        yAxis: { type: 'category' },
+        visualMap: {
+            orient: 'horizontal',
+            left: 'center',
+            min: 9.5,
+            max: 9.8,
+            text: ['Highest Score', 'Lowest Score'],
+            // Map the score column to color
+            dimension: 0,
+            inRange: {
+                color: ['#65B581', '#FFCE34', '#FD665F']
+            }
+        },
+        series: [
+            {
+                type: 'bar',
+                encode: {
+                    // Map the "amount" column to X axis.
+                    x: 'score',
+                    // Map the "product" column to Y axis
+                    y: 'movie'
+                }
+            }
+        ]
+    };
+
+    option && myChart.setOption(option);
+
+</script>
+
+</html>

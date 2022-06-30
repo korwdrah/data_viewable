@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>豆瓣电影可视化分析</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <script src="./layui/layui.js"></script>
+    <script src="./layui/echarts.js"></script>
+    <style>
+        body {
+            background-color: rgb(244, 246, 250);
+        }
+
+        div.all {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="all">
+        <!-- 你的 HTML 代码 -->
+        <ul class="layui-nav" lay-filter="">
+            <li class="layui-nav-item"><a href="index.html">电影基本信息</a></li>
+            <li class="layui-nav-item"><a href="yearNums.html">历年电影制作数总览</a></li>
+            <li class="layui-nav-item"><a href="typeNums.html">各类型电影制作总数总览</a></li>
+            <li class="layui-nav-item layui-this"><a href="typeNumsForDifCountry.html">国内外电影制作类型偏向对比</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">国内外电影评分top20</a>
+                <dl class="layui-nav-child">
+                    <!--横向柱状图-->
+                    <dd><a href="CNmoviesTop20.html">国内</a></dd>
+                    <dd><a href="outMoviesTop20.html">国外</a></dd>
+                </dl>
+            </li>
+        </ul>
+
+        <div id="difCountryTypes-chart"
+            style="position: absolute; width: 1400px; height: 600px; margin-top: 10px; margin-left: 20px;"></div>
+    </div>
+
+</body>
+<script>
+
+    var chartDom = document.getElementById('difCountryTypes-chart');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        title: {
+            text: '国内                                                国外',
+            subtext:
+                '电影类型占比                                                                                                                                                                   电影类型占比',
+            textStyle: {
+                fontSize: 40
+            },
+            top: 20,
+            left: 170
+        },
+        tooltip: {
+            show: true
+        },
+        dataset: [
+            {
+                source: [
+                    ['types', 'rate', 'area'],
+                    ['剧情', 8175, 'China'],
+                    ['剧情', 40273, 'OutCN'],
+                    ['喜剧', 2898, 'China'],
+                    ['喜剧', 21369, 'OutCN'],
+                    ['动作', 2904, 'China'],
+                    ['动作', 11054, 'OutCN'],
+                    ['爱情', 3454, 'China'],
+                    ['爱情', 13374, 'OutCN'],
+                    ['科幻', 369, 'China'],
+                    ['科幻', 4643, 'OutCN'],
+                    ['动画', 633, 'China'],
+                    ['动画', 3973, 'OutCN'],
+                    ['悬疑', 1561, 'China'],
+                    ['悬疑', 5931, 'OutCN'],
+                    ['惊悚', 1076, 'China'],
+                    ['惊悚', 11205, 'OutCN'],
+                    ['恐怖', 529, 'China'],
+                    ['恐怖', 9334, 'OutCN'],
+                    ['犯罪', 1102, 'China'],
+                    ['犯罪', 10648, 'OutCN'],
+                    ['同性', 129, 'China'],
+                    ['同性', 1184, 'OutCN'],
+                    ['音乐', 198, 'China'],
+                    ['音乐', 2320, 'OutCN'],
+                    ['歌舞', 186, 'China'],
+                    ['歌舞', 2954, 'OutCN'],
+                    ['传记', 227, 'China'],
+                    ['传记', 1794, 'OutCN'],
+                    ['历史', 349, 'China'],
+                    ['历史', 1500, 'OutCN'],
+                    ['战争', 449, 'China'],
+                    ['战争', 2100, 'OutCN'],
+                    ['西部', 33, 'China'],
+                    ['西部', 1317, 'OutCN'],
+                    ['奇幻', 811, 'China'],
+                    ['奇幻', 2888, 'OutCN'],
+                    ['冒险', 538, 'China'],
+                    ['冒险', 4846, 'OutCN'],
+                    ['灾难', 51, 'China'],
+                    ['灾难', 127, 'OutCN'],
+                    ['武侠', 479, 'China'],
+                    ['武侠', 109, 'OutCN'],
+                    ['情色', 97, 'China'],
+                    ['情色', 799, 'OutCN']
+                ]
+            },
+            {
+                transform: {
+                    type: 'filter',
+                    config: { dimension: 'area', value: 'China' }
+                }
+            },
+            {
+                transform: {
+                    type: 'filter',
+                    config: { dimension: 'area', value: 'OutCN' }
+                }
+            }
+        ],
+        series: [
+            {
+                type: 'pie',
+                radius: 160,
+                center: ['25%', '50%'],
+                datasetIndex: 1
+            },
+            {
+                type: 'pie',
+                radius: 160,
+                center: ['75%', '50%'],
+                datasetIndex: 2
+            }
+        ]
+    };
+
+    option && myChart.setOption(option);
+
+</script>
+
+</html>

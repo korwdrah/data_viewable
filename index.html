@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>豆瓣电影可视化分析</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <script src="./layui/layui.js"></script>
+    <script src="./layui/echarts.js"></script>
+    <style>
+        body {
+            background-color: rgb(244, 246, 250);
+        }
+
+        div.all {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        div.layui-card-header {
+            color: rgba(0, 150, 136, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="all">
+        <!-- 你的 HTML 代码 -->
+        <ul class="layui-nav" lay-filter="">
+            <li class="layui-nav-item layui-this"><a href="index.html">电影基本信息</a></li>
+            <li class="layui-nav-item"><a href="yearNums.html">历年电影制作数总览</a></li>
+            <li class="layui-nav-item"><a href="typeNums.html">各类型电影制作总数总览</a></li>
+            <li class="layui-nav-item"><a href="typeNumsForDifCountry.html">国内外电影制作类型偏向对比</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">国内外电影评分top20</a>
+                <dl class="layui-nav-child">
+                    <!--横向柱状图-->
+                    <dd><a href="CNmoviesTop20.html">国内</a></dd>
+                    <dd><a href="outMoviesTop20.html">国外</a></dd>
+                </dl>
+            </li>
+        </ul>
+
+        <div class="layui-bg-gray" style="padding: 30px;">
+            <div class="layui-row layui-col-space15">
+
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">电影总数</div>
+                        <div class="layui-card-body">
+                            电影数据总共有140502条;<br>
+                            其中有效数据为92944条,无效数据即电影时长为0的数据为47558条。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">电影类型描述</div>
+                        <div class="layui-card-body">
+                            电影数据中类型总共存在2个大类和22个小类<br>
+                            大类包括电影和纪录片，小类包括爱情、动作、喜剧等多个电影具体类型的小类
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">电影平均得分</div>
+                        <div class="layui-card-body">
+                            由于部分电影豆瓣电影网上并没有相关影评人进行评价，因此基数只是有豆瓣电影评分的所有电影数;<br>
+                            存在豆瓣电影评分的电影的平均得分为6.62;
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">电影平均投票人数</div>
+                        <div class="layui-card-body">
+                            原因同平均得分计算，基数只是有豆瓣电影投票数的所有电影数<br>
+                            存在豆瓣电影投票数的电影的平均投票人数为10289
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 平均分数图 -->
+        <div style="position: absolute; margin-top: 5px; margin-left: 10px; width: 630px; height: 560px;"
+            id="avg-chart"></div>
+
+        <!-- 类型总图 -->
+        <!-- 剧情 喜剧 动作 爱情 科幻 动画 悬疑 惊悚 恐怖 犯罪 同性 音乐 歌舞 传记 历史 战争 西部 奇幻 冒险 灾难 武侠 情色 -->
+        <div style="position: absolute; margin-left: 700px; margin-top: 2px; width: 650px; height: 350px;"
+            id="type-chart"></div>
+
+
+    </div>
+
+
+    <script>
+        var chartDom = document.getElementById('avg-chart');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            series: [
+                {
+                    type: 'gauge',
+                    startAngle: 180,
+                    endAngle: 0,
+                    min: 0,
+                    max: 10,
+                    splitNumber: 80,
+                    axisLine: {
+                        lineStyle: {
+                            width: 6,
+                            color: [
+                                [0.25, '#FF6E76'],
+                                [0.5, '#FDDD60'],
+                                [0.75, '#58D9F9'],
+                                [1, '#7CFFB2']
+                            ]
+                        }
+                    },
+                    pointer: {
+                        icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+                        length: '13%',
+                        width: 20,
+                        offsetCenter: [0, '-60%'],
+                        itemStyle: {
+                            color: 'auto'
+                        }
+                    },
+                    axisTick: {
+                        length: 12,
+                        lineStyle: {
+                            color: 'auto',
+                            width: 2
+                        }
+                    },
+                    splitLine: {
+                        length: 20,
+                        lineStyle: {
+                            color: 'auto',
+                            width: 5
+                        }
+                    },
+                    axisLabel: {
+                        color: '#464646',
+                        fontSize: 20,
+                        distance: -60,
+                        formatter: function (value) {
+                            if (value === 8.75) {
+                                return 'A';
+                            } else if (value === 6.25) {
+                                return 'B';
+                            } else if (value === 3.75) {
+                                return 'C';
+                            } else if (value === 1.25) {
+                                return 'D';
+                            }
+                            return '';
+                        }
+                    },
+                    title: {
+                        color: '#33aba0',
+                        offsetCenter: ['4%', '-123%'],
+                        fontSize: 30,
+                        fontWeight: 'bold'
+                    },
+                    detail: {
+                        fontSize: 40,
+                        offsetCenter: [0, '-15%'],
+                        valueAnimation: true,
+                        formatter: function (value) {
+                            return value + ' 分';
+                        },
+                        color: 'auto'
+                    },
+                    data: [
+                        {
+                            value: 6.62,
+                            name: '电影平均得分'
+                        }
+                    ]
+                }
+            ]
+        };
+
+        option && myChart.setOption(option);
+    </script>
+
+    <script>
+        var chartDom = document.getElementById('type-chart');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            title: {
+                text: '22种电影类型',
+                textStyle: {
+                    fontSize: 30,
+                    color: '#33aba0'
+                }
+            },
+            tooltip: {
+                show: false
+            },
+            legend: {
+                left: '80%',
+                top:'18%',
+                width:180,
+                height:80                
+            },
+            series: [
+                {
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '40',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        { value: 1, name: '剧情' },
+                        { value: 1, name: '喜剧' },
+                        { value: 1, name: '动作' },
+                        { value: 1, name: '爱情' },
+                        { value: 1, name: '科幻' },
+                        { value: 1, name: '动画' },
+                        { value: 1, name: '悬疑' },
+                        { value: 1, name: '惊悚' },
+                        { value: 1, name: '恐怖' },
+                        { value: 1, name: '犯罪' },
+                        { value: 1, name: '同性' },
+                        { value: 1, name: '音乐' },
+                        { value: 1, name: '歌舞' },
+                        { value: 1, name: '传记' },
+                        { value: 1, name: '历史' },
+                        { value: 1, name: '战争' },
+                        { value: 1, name: '西部' },
+                        { value: 1, name: '奇幻' },
+                        { value: 1, name: '冒险' },
+                        { value: 1, name: '灾难' },
+                        { value: 1, name: '武侠' },
+                        { value: 1, name: '情色' }
+                    ]
+                }
+            ]
+        };
+
+        option && myChart.setOption(option);
+
+    </script>
+</body>
+
+</html>
